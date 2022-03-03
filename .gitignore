@@ -20,3 +20,4 @@ yacctab.py
 Release/
 .cache/
 .pytest_cache/
+.idea/

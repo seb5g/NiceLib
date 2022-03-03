@@ -23,7 +23,7 @@ else:
 log = logging.getLogger(__name__)
 
 __all__ = ['NiceLib', 'NiceObject', 'Sig']
-FLAGS = {'prefix', 'ret', 'struct_maker', 'buflen', 'use_numpy', 'free_buf', 'use_handle'}
+FLAGS = {'prefix', 'ret', 'struct_maker', 'buflen', 'use_numpy', 'free_buf', 'use_handle', 'handle_last'}
 UNDER_FLAGS = {'_{}_'.format(f) for f in FLAGS}
 USINGLE_FLAGS = {'_'+f for f in FLAGS}
 COMBINED_FLAGS = UNDER_FLAGS | USINGLE_FLAGS
@@ -697,7 +697,10 @@ class LibMethod(object):
 
     def __call__(self, *args, **kwds):
         if self._libfunc.sig.flags.get('use_handle', True):
-            args = self._niceobj._handles + args
+            if self._libfunc.sig.flags.get('handle_last', True):
+                args = args + self._niceobj._handles
+            else:
+                args = self._niceobj._handles + args
         return self._libfunc._call(args, kwds, niceobj=self._niceobj)
 
 
